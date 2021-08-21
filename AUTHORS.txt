@@ -1,0 +1,7 @@
+###
+#
+#  mrhpspasswd Authors
+#
+###
+
+Jens Brörken <jens.broerken@gmail.com>
