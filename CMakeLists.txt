@@ -31,7 +31,6 @@ project(mrhpspasswd VERSION 1.0
                     DESCRIPTION "MRH password platform service executable"
                     LANGUAGES CXX)
 
-
 #########################################################################
 #
 #  PATHS
@@ -64,12 +63,12 @@ set(SRC_DIR_PATH "${CMAKE_SOURCE_DIR}/src/")
 			 
 set(SRC_LIST_CALLBACK "${SRC_DIR_PATH}/Callback/Service/CBAvail.cpp"
                       "${SRC_DIR_PATH}/Callback/Service/CBAvail.cpp"
-					  "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.cpp"
-					  "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.h"
-					  "${SRC_DIR_PATH}/Callback/Password/CBCheck.cpp"
-					  "${SRC_DIR_PATH}/Callback/Password/CBCheck.h"
-					  "${SRC_DIR_PATH}/Callback/Password/CBSet.cpp"
-					  "${SRC_DIR_PATH}/Callback/Password/CBSet.h")
+                      "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.cpp"
+                      "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.h"
+                      "${SRC_DIR_PATH}/Callback/Password/CBCheck.cpp"
+                      "${SRC_DIR_PATH}/Callback/Password/CBCheck.h"
+                      "${SRC_DIR_PATH}/Callback/Password/CBSet.cpp"
+                      "${SRC_DIR_PATH}/Callback/Password/CBSet.h")
                      
 set(SRC_LIST_PASSWORD "${SRC_DIR_PATH}/Password/PasswordFile.cpp"
                       "${SRC_DIR_PATH}/Password/PasswordFile.h"
@@ -79,8 +78,8 @@ set(SRC_LIST_PASSWORD "${SRC_DIR_PATH}/Password/PasswordFile.cpp"
                       "${SRC_DIR_PATH}/Password/Encryption.h")
                        
 set(SRC_LIST_SERVICE "${SRC_DIR_PATH}/Exception.h"
-					 "${SRC_DIR_PATH}/Revision.h"
-					 "${SRC_DIR_PATH}/Main.cpp")
+                     "${SRC_DIR_PATH}/Revision.h"
+                     "${SRC_DIR_PATH}/Main.cpp")
 
 ###
 #  Library Paths
@@ -93,17 +92,16 @@ set(LIB_DIR_PATH "${CMAKE_SOURCE_DIR}/lib/")
 set(INCLUDE_DIR_PATH "${CMAKE_SOURCE_DIR}/include/")
 
 set(LIB_BIN_LIST "${LIB_DIR_PATH}/libmrhev.a"
-				 "${LIB_DIR_PATH}/libmrhcevs.a"
-				 "${LIB_DIR_PATH}/libmrhbf.a"
-				 "${LIB_DIR_PATH}/libmrhpsb.a"
-				 "${LIB_DIR_PATH}/libsodium.a")
+                 "${LIB_DIR_PATH}/libmrhcevs.a"
+                 "${LIB_DIR_PATH}/libmrhbf.a"
+                 "${LIB_DIR_PATH}/libmrhpsb.a"
+                 "${LIB_DIR_PATH}/libsodium.a")
 set(LIB_INCLUDE_LIST "${INCLUDE_DIR_PATH}/mrhshared"
-					 "${INCLUDE_DIR_PATH}/libmrhev"
-					 "${INCLUDE_DIR_PATH}/libmrhcevs"
-					 "${INCLUDE_DIR_PATH}/libmrhbf"
-					 "${INCLUDE_DIR_PATH}/libmrhpsb"
-					 "${INCLUDE_DIR_PATH}/sodium")
-
+                     "${INCLUDE_DIR_PATH}/libmrhev"
+                     "${INCLUDE_DIR_PATH}/libmrhcevs"
+                     "${INCLUDE_DIR_PATH}/libmrhbf"
+                     "${INCLUDE_DIR_PATH}/libmrhpsb"
+                     "${INCLUDE_DIR_PATH}/sodium")
 
 #########################################################################
 #
@@ -120,10 +118,10 @@ add_executable(mrhpspasswd ${SRC_LIST_CALLBACK}
                            ${SRC_LIST_PASSWORD}
                            ${SRC_LIST_SERVICE})
 set_target_properties(mrhpspasswd
-    		          PROPERTIES
-    		          ARCHIVE_OUTPUT_DIRECTORY ${BIN_DIR_PATH}
-    		          LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR_PATH}
-    		          RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR_PATH})
+                      PROPERTIES
+                      ARCHIVE_OUTPUT_DIRECTORY ${BIN_DIR_PATH}
+                      LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR_PATH}
+                      RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR_PATH})
 
 ###
 #  Required Libraries
