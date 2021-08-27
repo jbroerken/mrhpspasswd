@@ -62,7 +62,7 @@ file(MAKE_DIRECTORY ${BUILD_DIR_PATH})
 set(SRC_DIR_PATH "${CMAKE_SOURCE_DIR}/src/")
 			 
 set(SRC_LIST_CALLBACK "${SRC_DIR_PATH}/Callback/Service/CBAvail.cpp"
-                      "${SRC_DIR_PATH}/Callback/Service/CBAvail.cpp"
+                      "${SRC_DIR_PATH}/Callback/Service/CBAvail.h"
                       "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.cpp"
                       "${SRC_DIR_PATH}/Callback/Service/CBCustomCommand.h"
                       "${SRC_DIR_PATH}/Callback/Password/CBCheck.cpp"
