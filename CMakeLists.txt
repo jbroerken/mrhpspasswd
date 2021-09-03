@@ -137,4 +137,4 @@ include_directories(${LIB_INCLUDE_LIST})
 #  Preprocessor source definitions.
 ###
 target_compile_definitions(mrhpspasswd PRIVATE MRH_PASSWORD_SERVICE_THREAD_COUNT=1)
-target_compile_definitions(mrhpspasswd PRIVATE MRH_PASSWORD_FILE_PATH="/etc/mrhpservice/Password.conf")
+target_compile_definitions(mrhpspasswd PRIVATE MRH_PASSWORD_FILE_PATH="/usr/local/etc/mrh/mrhpservice/Password.conf")
