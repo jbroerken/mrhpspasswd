@@ -31,7 +31,7 @@
 
 // Pre-defined
 #ifndef MRH_PASSWORD_FILE_PATH
-    #define MRH_PASSWORD_FILE_PATH "/etc/mrhpservice/Password.conf"
+    #define MRH_PASSWORD_FILE_PATH "/usr/local/etc/mrh/mrhpservice/Password.conf"
 #endif
 
 
