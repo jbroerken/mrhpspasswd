@@ -74,8 +74,7 @@ int main(int argc, const char* argv[])
         p_Context = new libmrhpsb("mrhpspasswd",
                                   argc,
                                   argv,
-                                  MRH_PASSWORD_SERVICE_THREAD_COUNT,
-                                  true);
+                                  MRH_PASSWORD_SERVICE_THREAD_COUNT);
     }
     catch (MRH_PSBException& e)
     {
