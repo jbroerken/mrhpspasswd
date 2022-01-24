@@ -29,15 +29,6 @@
 #include "./CBAvail.h"
 #include "../../Password/PasswordFile.h"
 
-// Pre-defined
-namespace
-{
-    // Service identification
-    constexpr MRH_Uint32 u32_SupplierID = 0x4d524800;
-    constexpr MRH_Uint32 u32_BinaryID = 0x50415353;
-    constexpr MRH_Uint32 u32_Version = 1;
-}
-
 
 //*************************************************************************************
 // Constructor / Destructor
@@ -53,25 +44,42 @@ CBAvail::~CBAvail() noexcept
 // Callback
 //*************************************************************************************
 
-void CBAvail::Callback(const MRH_EVBase* p_Event, MRH_Uint32 u32_GroupID) noexcept
+void CBAvail::Callback(const MRH_Event* p_Event, MRH_Uint32 u32_GroupID) noexcept
 {
-    bool b_Usable = true;
+    MRH_Uint8 u8_Available = MRH_EVD_BASE_RESULT_SUCCESS;
     
     if (PasswordFile::Singleton().GetExists() == false)
     {
-        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, "No password file!",
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::WARNING, "No password file!",
                                        "CBAvail.cpp", __LINE__);
-        b_Usable = false;
+        u8_Available = MRH_EVD_BASE_RESULT_FAILED;
     }
+    
+    MRH_EvD_P_ServiceAvail_S c_Data;
+    c_Data.u8_Available = u8_Available;
+    c_Data.u32_SupplierID = 0x4d524800;
+    c_Data.u32_BinaryID = 0x50415353;
+    c_Data.u32_Version = 1;
+    
+    MRH_Event* p_Result = MRH_EVD_CreateSetEvent(MRH_EVENT_PASSWORD_AVAIL_S, &c_Data);
+    
+    if (p_Result == NULL)
+    {
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::ERROR, "Failed to create response event!",
+                                       "CBAvail.cpp", __LINE__);
+        return;
+    }
+    
+    p_Result->u32_GroupID = u32_GroupID;
     
     try
     {
-        MRH_P_AVAIL_S c_Result(b_Usable, u32_SupplierID, u32_BinaryID, u32_Version);
-        MRH_EventStorage::Singleton().Add(c_Result, u32_GroupID);
+        MRH_EventStorage::Singleton().Add(p_Result);
     }
     catch (MRH_PSBException& e)
     {
         MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::ERROR, e.what(),
                                        "CBAvail.cpp", __LINE__);
+        MRH_EVD_DestroyEvent(p_Result);
     }
 }

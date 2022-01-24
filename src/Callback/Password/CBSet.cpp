@@ -45,21 +45,28 @@ CBSet::~CBSet() noexcept
 // Callback
 //*************************************************************************************
 
-void CBSet::Callback(const MRH_EVBase* p_Event, MRH_Uint32 u32_GroupID) noexcept
+void CBSet::Callback(const MRH_Event* p_Event, MRH_Uint32 u32_GroupID) noexcept
 {
-    // Compare password
-    bool b_Result = false;
+    // Update password
+    MRH_EvD_P_Set_U c_RequestData;
+    MRH_EvD_P_Set_S c_ResultData;
+    c_ResultData.u8_Result = MRH_EVD_BASE_RESULT_FAILED;
     
-    if (CanAccess() == true)
+    if (MRH_EVD_ReadEvent(&c_RequestData, p_Event->u32_Type, p_Event) < 0)
+    {
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, "Failed to read request event!",
+                                       "CBSet.cpp", __LINE__);
+    }
+    else if (CanAccess() == true)
     {
         try
         {
-            std::string s_Hash = Encryption::Encrypt(static_cast<const MRH_P_SET_U*>(p_Event)->GetString());
+            std::string s_Hash = Encryption::Encrypt(c_RequestData.p_String);
             
             PasswordFile::Singleton().Write(s_Hash);
             Encryption::Clear(s_Hash);
             
-            b_Result = true;
+            c_ResultData.u8_Result = MRH_EVD_BASE_RESULT_SUCCESS;
         }
         catch (Exception& e)
         {
@@ -68,10 +75,20 @@ void CBSet::Callback(const MRH_EVBase* p_Event, MRH_Uint32 u32_GroupID) noexcept
         }
     }
     
+    MRH_Event* p_Result = MRH_EVD_CreateSetEvent(MRH_EVENT_PASSWORD_SET_S, &c_ResultData);
+    
+    if (p_Result == NULL)
+    {
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::ERROR, "Failed to create response event!",
+                                       "CBSet.cpp", __LINE__);
+        return;
+    }
+    
+    p_Result->u32_GroupID = u32_GroupID;
+    
     try
     {
-        MRH_P_SET_S c_Result(b_Result);
-        MRH_EventStorage::Singleton().Add(c_Result, u32_GroupID);
+        MRH_EventStorage::Singleton().Add(p_Result);
     }
     catch (MRH_PSBException& e)
     {

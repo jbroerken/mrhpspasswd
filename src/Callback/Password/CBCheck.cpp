@@ -45,43 +45,63 @@ CBCheck::~CBCheck() noexcept
 // Callback
 //*************************************************************************************
 
-void CBCheck::Callback(const MRH_EVBase* p_Event, MRH_Uint32 u32_GroupID) noexcept
+void CBCheck::Callback(const MRH_Event* p_Event, MRH_Uint32 u32_GroupID) noexcept
 {
     // Compare password
-    bool b_Result = false;
+    MRH_EvD_P_Check_U c_RequestData;
+    MRH_EvD_P_Check_S c_ResultData;
+    c_ResultData.u8_Result = MRH_EVD_BASE_RESULT_FAILED;
     
-    if (CanAccess() == true)
+    if (MRH_EVD_ReadEvent(&c_RequestData, p_Event->u32_Type, p_Event) < 0)
     {
-        try
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, "Failed to read request event!",
+                                       "CBCheck.cpp", __LINE__);
+    }
+    else
+    {
+        if (CanAccess() == true)
         {
-            std::string s_Hash(PasswordFile::Singleton().Read());
-            std::string s_String(static_cast<const MRH_P_CHECK_U*>(p_Event)->GetString());
-            
-            if (Encryption::Compare(s_Hash, s_String))
+            try
             {
-                MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, "Password check failed.",
+                std::string s_Hash(PasswordFile::Singleton().Read());
+                std::string s_String(c_RequestData.p_String);
+                
+                if (Encryption::Compare(s_Hash, s_String))
+                {
+                    MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, "Password check failed!",
+                                                   "CBCheck.cpp", __LINE__);
+                }
+                else
+                {
+                    c_ResultData.u8_Result = MRH_EVD_BASE_RESULT_SUCCESS;
+                }
+                
+                Encryption::Clear(s_String);
+            }
+            catch (Exception& e)
+            {
+                MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, e.what(),
                                                "CBCheck.cpp", __LINE__);
             }
-            else
-            {
-                b_Result = true;
-            }
-            
-            Encryption::Clear(s_String);
         }
-        catch (Exception& e)
-        {
-            MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::INFO, e.what(),
-                                           "CBCheck.cpp", __LINE__);
-        }
+        
+        AccessResult((c_ResultData.u8_Result == MRH_EVD_BASE_RESULT_SUCCESS ? true : false));
     }
     
-    AccessResult(b_Result);
+    MRH_Event* p_Result = MRH_EVD_CreateSetEvent(MRH_EVENT_PASSWORD_CHECK_S, &c_ResultData);
+    
+    if (p_Result == NULL)
+    {
+        MRH_PSBLogger::Singleton().Log(MRH_PSBLogger::ERROR, "Failed to create response event!",
+                                       "CBCheck.cpp", __LINE__);
+        return;
+    }
+    
+    p_Result->u32_GroupID = u32_GroupID;
     
     try
     {
-        MRH_P_CHECK_S c_Result(b_Result);
-        MRH_EventStorage::Singleton().Add(c_Result, u32_GroupID);
+        MRH_EventStorage::Singleton().Add(p_Result);
     }
     catch (MRH_PSBException& e)
     {
