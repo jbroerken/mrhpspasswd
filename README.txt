@@ -30,7 +30,7 @@ Dependency List:
 libmrhevdata: https://github.com/jbroerken/libmrhevdata/
 libmrhpsb: https://github.com/jbroerken/libmrhpsb/
 mrhshared: https://github.com/jbroerken/mrhshared/
-libsodium | https://libsodium.gitbook.io/doc/
+libsodium: https://libsodium.gitbook.io/doc/
 
 For more information about the requirements, check the "Building" section found in the documentation.
 
